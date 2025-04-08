@@ -1,0 +1,98 @@
+<section class="product">
+  <div class="product__inner-container">
+    <div class="product__image-section">
+     {% if section.settings.product_image %}
+        {% assign image_width = section.settings.product_image.width %}
+        {% assign image_height = section.settings.product_image.height %}
+        <img src="{{ section.settings.product_image | image_url }}" alt="{{ section.settings.image_alt }}" width="{{ image_width }}" height="{{ image_height }}" class="product__image">
+    {% endif %}
+    </div>
+    <div class="product__text-section">
+      <div class="product__content">
+        <h3 class="product__tagline">{{ section.settings.tagline | escape }}</h3>
+        <h4 class="product__title">{{ section.settings.title | escape }}</h4>
+        <ul class="product__list">
+          {% for block in section.blocks %}
+            <li class="product__list-item">
+              {% if block.settings.list_icon %}
+                <img src="{{ block.settings.list_icon | asset_url }}" alt="{{ block.settings.icon_alt }}" width="24" height="24">
+              {% endif %}
+              {{ block.settings.list_text | escape }}
+            </li>
+          {% endfor %}
+        </ul>
+        <a href="{{ section.settings.button_link }}" class="button p-button orange ss-img-with-text-btn button--secondary">{{ section.settings.button_text | escape }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image Alt Text"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "DISCOVER NATURAL CONGESTION RELIEF"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Order SinuSauna today"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "list_item",
+      "name": "List Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "list_icon",
+          "label": "List Icon"
+        },
+        {
+          "type": "text",
+          "id": "icon_alt",
+          "label": "Icon Alt Text"
+        },
+        {
+          "type": "text",
+          "id": "list_text",
+          "label": "List Text",
+          "default": "List Item Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Product Section",
+    }
+  ]
+}
+{% endschema %}

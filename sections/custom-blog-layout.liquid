@@ -1,0 +1,178 @@
+{%- assign blog = section.settings.blog -%}
+{%- assign posts_limit = section.settings.post_limit | default: 3 -%}
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign fetch_priority = 'auto'
+  if section.index == 1
+    assign fetch_priority = 'high'
+  endif
+  if section.settings.color_scheme == section.settings.section_color_scheme and section.settings.content_layout == 'no-overlap'
+    assign remove_color_classes = true
+  endif
+-%}
+<section class="blog-layout section-{{ section.id }}-padding gradient color-{{ section.settings.section_color_scheme }}">
+  <div class="container page-width">
+    <div class="blog-layout__header blog__header">
+      <h2 class="blog-layout__title">{{ section.settings.title | escape }}</h2>
+
+        {%- assign external_link_url = section.settings.external_link -%}
+      
+     {% if external_link_url != blank %}
+        <a href="{{ external_link_url }}" class="button button--tertiary">All blogs</a>
+      {% else %}
+        <a href="#" class="button button--tertiary">All blogs</a>
+      {% endif %}
+    </div>
+
+    {%- if blog != empty and blog.articles.size > 0 -%}
+      <div class="blog__content-wrapper">
+        {%- assign first_article = blog.articles.last -%}
+        {%- if first_article -%}
+          <div class="blog__main-post">
+            <article class="blog-post">
+              {%- if first_article.image -%}
+                <a href="{{ first_article.url }}" class="blog-post__image-link">
+                  {{ first_article.image | image_url: width: 500 | image_tag: loading: 'lazy', class: 'blog-post__image' }}
+                </a>
+              {%- endif -%}
+              <div class="blog-post__content">
+                 <p class="blog-post__meta">
+                  {{ first_article.published_at | date: '%B %d, %Y' }} • {{ first_article.author }}
+                </p>
+                <h3 class="blog-post__title ">
+                {{ first_article.title | escape }}
+                </h3>
+               
+              </div>
+            </article>
+          </div>
+        {%- endif -%}
+
+        <div class="blog__grid-posts">
+          {%- for article in blog.articles offset: 0 limit: posts_limit -%}
+            {% if article !=  blog.articles.last %}
+            <article class="blog-post">
+              {%- if article.image -%}
+                <a href="{{ article.url }}" class="blog-post__image-link">
+                  {{ article.image | image_url: width: 500 | image_tag: loading: 'lazy', class: 'blog-post__image' }}
+                </a>
+              {%- endif -%}
+              <div class="blog-post__content">
+                 <p class="blog-post__meta">
+                  {{ article.published_at | date: '%B %d, %Y' }} • {{ article.author }}
+                </p>
+                <h3 class="blog-post__title">
+                 {{ article.title | escape }}
+                </h3>
+               
+              </div>
+            </article>
+               {% endif %}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      <p>{{ 'general.sinusaunalive_blog.no_blog_source' | t }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Blog Layout",
+   "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Our latest blogs"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Select Blog"
+    },
+    {
+      "type": "range",
+      "id": "post_limit",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "label": "Number of posts to show",
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "all_blogs_text",
+      "label": "All blogs link text",
+      "default": "All blogs"
+    },
+     {
+      "type": "url",
+      "id": "external_link",
+      "label": "Select blog category"
+    },
+    {
+      "type": "color_scheme",
+      "id": "section_color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.multirow.settings.container_color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Blog Layout",
+      "category": "blog"
+    }
+  ]
+}
+{% endschema %}
+ 
+

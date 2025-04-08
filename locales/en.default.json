@@ -9,6 +9,9 @@
  */
 {
   "general": {
+    "sinusaunalive_blog":{
+      "no_blog_source":"Plese select the article category"
+    },
     "password_page": {
       "login_form_heading": "Enter store using password:",
       "login_password_button": "Enter using password",
